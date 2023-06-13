@@ -5,9 +5,9 @@ services:
     plan: free
     repo: https://github.com/arysttoto/fastapi-boilerplate-nfactorial.git
     region: frankfurt
-    branch: main
+    branch: main 
     envVars:
-      - key: MONGO_URL
+      - key: mongodb+srv://arysttoto:v3bqYa0VRCkw08wR@shanyrak.a1xcqlc.mongodb.net/?retryWrites=true&w=majority
         sync: false
     buildFilter:
       paths:
