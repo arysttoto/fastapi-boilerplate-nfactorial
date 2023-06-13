@@ -1,7 +1,7 @@
 services:
   - type: web
     name: fastapi
-    runtime: docker
+    runtime: docker 
     plan: free
     repo: https://github.com/arysttoto/fastapi-boilerplate-nfactorial.git
     region: frankfurt
