@@ -8,9 +8,10 @@ from app.auth.router.dependencies import parse_jwt_user_data
 
 from ..service import Service, get_service
 from . import router
+from .errors import InvalidCredentialsException
 
 
-class createPostRequest(AppModel):
+class updatePostRequest(AppModel):
     type: str
     price: float
     address: str
@@ -19,17 +20,17 @@ class createPostRequest(AppModel):
     description: str
 
 
-class createPostResponse(AppModel):
-    new_post_id: str
-
-
-@router.post("/", status_code=200)
-def create_post(
-    input: createPostRequest,
+@router.patch("/{post_id}", status_code=200)
+def update_post(
+    post_id: str,
+    input: updatePostRequest,
     jwt_data: JWTData = Depends(parse_jwt_user_data),
     svc: Service = Depends(get_service),
 ):
-    user_id = svc.repository.get_user_by_id(jwt_data.user_id)["_id"]
-    id_post = svc.repository.create_post(user_id, input.dict())
+    user = svc.repository.get_user_by_id(jwt_data.user_id)
+    if not user:
+        raise InvalidCredentialsException
+    user_id = user["_id"]
+    svc.repository.update_post(post_id, user_id, input.dict())
 
-    return createPostResponse(new_post_id=str(id_post))
+    return 200
