@@ -62,3 +62,13 @@ class PostRepository:
         if post["user_id"] != userId:
             raise AuthorizationFailedException
         self.database["posts"].delete_one({"_id": ObjectId(postId)})
+
+    def change_post_image(self, postId, userId, imageLinks):
+        post = self.database["posts"].find_one({"_id": ObjectId(postId)})
+
+        if not post:
+            raise InvalidCredentialsException
+        if post["user_id"] != userId:
+            raise AuthorizationFailedException
+        payload = {"media": imageLinks}
+        self.database["posts"].update_one({"_id": ObjectId(postId)}, {"$set": payload})

@@ -5,6 +5,10 @@ from app.auth.router import router as auth_router
 from app.posts.router import router as post_router
 from app.config import client, env, fastapi_config
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 app = FastAPI(**fastapi_config)
 
 
