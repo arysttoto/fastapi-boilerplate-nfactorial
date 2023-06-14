@@ -19,7 +19,7 @@ This is a FastAPI boilerplate, which includes includes:
 
 ## 🚀 Quick Start
 
-You'll need Docker and Docker Compose to run this application.
+You'll need Docker and Docker Compose to run this application. 
 
 1. Build the project
 

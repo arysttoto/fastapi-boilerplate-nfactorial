@@ -7,9 +7,8 @@ services:
     region: frankfurt
     branch: main 
     envVars:
-      - key: mongodb+srv://arysttoto:v3bqYa0VRCkw08wR@shanyrak.a1xcqlc.mongodb.net/?retryWrites=true&w=majority
+      - key: MONGO_URL
         sync: false
     buildFilter:
       paths:
       - app/**
-  

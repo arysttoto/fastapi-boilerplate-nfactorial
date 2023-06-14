@@ -22,7 +22,7 @@ env = Config()
 
 # FastAPI configurations
 fastapi_config: dict[str, Any] = {
-    "title": "API",
+    "title": "API, Shanyrak Marketplace",
 }
 
 mongo_url = (
