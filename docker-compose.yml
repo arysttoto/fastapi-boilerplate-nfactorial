@@ -18,7 +18,7 @@ services:
     image: mongo:4.4.6-bionic
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGOUSER:-root}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGOPASSWORD:-password}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGOPASSWORD:-password} 
     ports:
       - "27017:27017"
     volumes:

@@ -1,4 +1,6 @@
-from typing import Any
+from typing import Any, Optional
+
+import logging
 
 from fastapi import Depends
 from pydantic import Field
@@ -9,27 +11,25 @@ from ..adapters.jwt_service import JWTData
 from ..service import Service, get_service
 from . import router
 from .dependencies import parse_jwt_user_data
+from .errors import InvalidCredentialsException
 
 
 class GetMyAccountResponse(AppModel):
     id: Any = Field(alias="_id")
     email: str
-    phone: str
-    name: str
-    city: str
+    city: Optional[str]
+    name: Optional[str]
+    phone: Optional[str]
 
 
 @router.get("/users/me", response_model=GetMyAccountResponse)
 def get_my_account(
     jwt_data: JWTData = Depends(parse_jwt_user_data),
     svc: Service = Depends(get_service),
-) -> dict[str, str, str, str]:
+) -> dict[str, str]:
     user = svc.repository.get_user_by_id(jwt_data.user_id)
-    if "phone" not in user:
-        user["phone"] = ""
-    if "name" not in user:
-        user["name"] = ""
-    if "city" not in user:
-        user["city"] = ""
+    # logging.info(user)
+    if not user:
+        raise InvalidCredentialsException
 
     return user
