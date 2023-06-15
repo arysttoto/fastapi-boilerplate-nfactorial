@@ -11,8 +11,10 @@ from ..service import Service, get_service
 from . import router
 from .errors import InvalidCredentialsException
 
+import logging
 
-@router.post("/shanyraks/{post_id}/media", status_code=200)
+
+@router.post("/{post_id}/media", status_code=200)
 def set_post_image(
     files: List[UploadFile],
     post_id: str,
@@ -27,7 +29,7 @@ def set_post_image(
     result_links = []
     for file in files:
         url = svc.s3_service.upload_file(file.file, file.filename)
-        result_links.append(file)
+        result_links.append(url)
 
     svc.repository.change_post_image(post_id, user_id, result_links)
 

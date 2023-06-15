@@ -29,7 +29,7 @@ def create_post(
     jwt_data: JWTData = Depends(parse_jwt_user_data),
     svc: Service = Depends(get_service),
 ):
-    user_id = svc.repository.get_user_by_id(jwt_data.user_id)["_id"]
+    user_id = jwt_data.user_id
     id_post = svc.repository.create_post(user_id, input.dict())
 
     return createPostResponse(new_post_id=str(id_post))

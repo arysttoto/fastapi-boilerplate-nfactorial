@@ -29,3 +29,8 @@ class S3Service:
         )
 
         return object_url
+
+    def delete_file(self, filename):
+        bucket = "aryst.toto-bucket"
+        filekey = f"posts/{filename.split('/')[-1]}"
+        self.s3.delete_object(Bucket=bucket, Key=filekey)

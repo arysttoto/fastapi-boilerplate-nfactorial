@@ -7,30 +7,28 @@ from . import router
 
 from .errors import InvalidCredentialsException
 
+from typing import Optional, Any
+
+from pydantic import Field
+
 
 class getPostResponse(AppModel):
-    id_post: str
+    id_post: Any = Field(alias="_id")
+    user_id: Any = Field(alias="user_id")
     type: str
     price: float
     address: str
     area: float
     rooms_count: int
     description: str
-    user_id: str
+    media: Optional[list]
 
 
-@router.get("/{item_id}", status_code=200)
-def get_post(item_id: str, svc: Service = Depends(get_service)):
-    post = svc.repository.get_post_by_id(item_id)
+@router.get("/{post_id}", status_code=200, response_model=getPostResponse)
+def get_post(post_id: str, svc: Service = Depends(get_service)):
+    post = svc.repository.get_post_by_id(post_id)
+
     if not post:
         raise InvalidCredentialsException
-    return getPostResponse(
-        id_post=str(post["_id"]),
-        type=post["type"],
-        price=post["price"],
-        address=post["address"],
-        area=post["area"],
-        rooms_count=post["rooms_count"],
-        description=post["description"],
-        user_id=str(post["user_id"]),
-    )
+
+    return post
