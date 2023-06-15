@@ -30,6 +30,10 @@ def create_post(
     svc: Service = Depends(get_service),
 ):
     user_id = jwt_data.user_id
-    id_post = svc.repository.create_post(user_id, input.dict())
+    coordinates = svc.here_service.get_coordinates(address=input.address)
+    if not coordinates:
+        coordinates = "Unknown"
+
+    id_post = svc.repository.create_post(user_id, input.dict(), coordinates)
 
     return createPostResponse(new_post_id=str(id_post))

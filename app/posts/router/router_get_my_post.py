@@ -13,7 +13,7 @@ from pydantic import Field
 
 
 class getPostResponse(AppModel):
-    id_post: Any = Field(alias="_id")
+    _id: Any = Field(alias="_id")
     user_id: Any = Field(alias="user_id")
     type: str
     price: float
@@ -21,6 +21,7 @@ class getPostResponse(AppModel):
     area: float
     rooms_count: int
     description: str
+    location: Any
     media: Optional[list]
 
 

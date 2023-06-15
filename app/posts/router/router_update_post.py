@@ -27,10 +27,12 @@ def update_post(
     jwt_data: JWTData = Depends(parse_jwt_user_data),
     svc: Service = Depends(get_service),
 ):
-    user = svc.repository.get_user_by_id(jwt_data.user_id)
-    if not user:
-        raise InvalidCredentialsException
-    user_id = user["_id"]
-    svc.repository.update_post(post_id, user_id, input.dict())
+    user_id = jwt_data.user_id
+
+    coordinates = svc.here_service.get_coordinates(address=input.address)
+    if not coordinates:
+        coordinates = "Unknown"
+
+    svc.repository.update_post(post_id, user_id, input.dict(), coordinates)
 
     return 200

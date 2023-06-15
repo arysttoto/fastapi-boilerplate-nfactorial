@@ -15,4 +15,5 @@ uvicorn \
     --host "$HOST" \
     --port "$PORT" \
     --log-config "$LOG_CONFIG" \
-    "$APP_MODULE"
+    "$APP_MODULE" 
+    

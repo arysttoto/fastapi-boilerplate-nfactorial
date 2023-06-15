@@ -43,3 +43,15 @@ class AuthRepository:
             "city": updated_data["city"],
         }
         self.database["users"].update_one({"_id": ObjectId(user_id)}, {"$set": payload})
+
+    def add_user_avatar(self, userId, url):
+        self.database["users"].update_one(
+            {"_id": ObjectId(userId)}, {"$set": {"avatar_url": url}}
+        )
+        return
+
+    def delete_user_avatar(self, userId):
+        self.database["users"].update_one(
+            {"_id": ObjectId(userId)}, {"$unset": {"avatar_url": ""}}
+        )
+        return

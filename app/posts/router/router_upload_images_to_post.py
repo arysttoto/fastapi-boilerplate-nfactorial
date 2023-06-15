@@ -21,17 +21,19 @@ def set_post_image(
     jwt_data: JWTData = Depends(parse_jwt_user_data),
     svc: Service = Depends(get_service),
 ):
-    user = svc.repository.get_user_by_id(jwt_data.user_id)
-    if not user:
+    user_id = jwt_data.user_id
+
+    post = svc.repository.get_post_by_id(post_id)
+
+    if str(post["user_id"]) != user_id:
         raise InvalidCredentialsException
-    user_id = user["_id"]
 
     result_links = []
     for file in files:
         url = svc.s3_service.upload_file(file.file, file.filename)
         result_links.append(url)
 
-    svc.repository.change_post_image(post_id, user_id, result_links)
+    svc.repository.change_post_image(post_id, result_links)
 
     return 200
 
