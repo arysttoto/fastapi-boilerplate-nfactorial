@@ -64,9 +64,13 @@ class PostRepository:
         post = self.database["posts"].find_one({"_id": ObjectId(postId)})
         if not post:
             raise InvalidCredentialsException
-        if post["user_id"] != userId:
+        if str(post["user_id"]) != userId:
             raise AuthorizationFailedException
+        # delete from posts, favorites and all it's comments
         self.database["posts"].delete_one({"_id": ObjectId(postId)})
+        self.database["comments"].delete_many({"post_id": ObjectId(postId)})
+        self.database["favorites"].delete_many({"post_id": ObjectId(postId)})
+        return
 
     def change_post_image(self, postId, imageLinks):
         payload = {"media": {"$each": imageLinks}}
