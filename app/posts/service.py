@@ -4,6 +4,7 @@ from .adapters.s3_service import S3Service
 from .repository.repository import PostRepository
 from app.posts.adapters.here_service import HereService
 
+
 import os
 
 api_key = os.getenv("HERE_API_KEY")

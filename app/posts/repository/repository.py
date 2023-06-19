@@ -5,10 +5,13 @@ from pymongo.database import Database
 
 from fastapi.responses import JSONResponse
 import logging
+from bson.code import Code
 
 from app.auth.utils.security import hash_password
 
 from ..router.errors import InvalidCredentialsException, AuthorizationFailedException
+
+from ..utils.check_radius import haversine_distance
 
 
 class PostRepository:
@@ -23,10 +26,12 @@ class PostRepository:
             "address": user["address"],
             "area": user["area"],
             "rooms_count": user["rooms_count"],
+            "created_at": datetime.utcnow(),
             "description": user["description"],
             "location": location,
         }
         result = self.database["posts"].insert_one(payload)
+
         return result.inserted_id
 
     def get_user_by_id(self, user_id: str) -> dict | None:
@@ -150,3 +155,50 @@ class PostRepository:
     def delete_favorite(self, postId, userId):
         query = {"$and": [{"user_id": ObjectId(userId)}, {"post_id": ObjectId(postId)}]}
         self.database["favorites"].delete_one(query)
+
+    def get_posts(
+        self,
+        limit,
+        offset,
+        type,
+        rooms_count,
+        price_from,
+        price_until,
+        latitude,
+        longitude,
+        radius,
+    ):
+        if latitude:
+            min_lat, max_lat, min_lon, max_lon = haversine_distance(
+                latitude, longitude, radius
+            )
+
+        query = {
+            "$and": [
+                ({"type": type}) if type != None else {},
+                ({"rooms_count": rooms_count}) if rooms_count != None else {},
+                ({"price": {"$gte": price_from}}) if price_from != None else {},
+                ({"price": {"$lt": price_until}}) if price_until != None else {},
+                ({"location.lat": {"$gte": min_lat, "$lte": max_lat}})
+                if latitude
+                else {},
+                ({"location.lng": {"$gte": min_lon, "$lte": max_lon}})
+                if longitude
+                else {},
+            ]
+        }
+        total_count = self.database["posts"].count_documents(query)
+
+        cursor = (
+            self.database["posts"]
+            .find(query)
+            .sort("created_at")
+            .skip(offset)
+            .limit(limit)
+        )
+
+        result = []
+        for item in cursor:
+            result.append(item)
+
+        return {"total": total_count, "posts": result}
