@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: fastapi
+    name: fastapi-incubator-homeworks
     runtime: docker 
     plan: free
     repo: https://github.com/arysttoto/fastapi-boilerplate-nfactorial.git
@@ -9,6 +9,12 @@ services:
     envVars:
       - key: MONGO_URL   
         sync: false   
+      - key: HERE_API_KEY
+        sync: false   
+      - key: AWS_SECRET_ACCESS_KEY 
+      sync: false   
+      - key: AWS_ACCESS_KEY_ID 
+      sync: false   
     buildFilter:
       paths:
       - app/**    

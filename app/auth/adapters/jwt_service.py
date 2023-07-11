@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 
 class JWTData(BaseModel):
-    user_id: str = Field(alias="sub")
+    user_id: str = Field(alias="sub") 
 
 
 class JwtService:
